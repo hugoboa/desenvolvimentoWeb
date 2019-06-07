@@ -1,0 +1,68 @@
+--CREATE DATABASE picapau;
+DROP TABLE IF EXISTS categorias CASCADE;
+CREATE TABLE categorias(
+	id SERIAL,
+	nome VARCHAR(30) NOT NULL UNIQUE,
+	PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS produtos CASCADE;
+CREATE TABLE produtos(
+	id SERIAL,
+	idCategoria INTEGER,
+	marca VARCHAR (20) NOT NULL,
+	modelo VARCHAR(80) NOT NULL UNIQUE,
+	descricao TEXT,
+	precoCusto MONEY,
+	precoVenda MONEY,
+	estoque INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY (idCategoria) REFERENCES categorias(id)
+);
+
+DROP TABLE IF EXISTS imagensprodutos CASCADE;
+CREATE TABLE imagensprodutos(
+	id SERIAL,
+	idproduto INTEGER NOT NULL,
+	nome VARCHAR(80) NOT NULL UNIQUE,
+	PRIMARY KEY (id),
+	FOREIGN KEY (idproduto) REFERENCES produtos(id)
+);
+
+DROP TABLE IF EXISTS clientes CASCADE;
+CREATE TABLE clientes(
+	id SERIAL,
+	nome VARCHAR(30) NOT NULL,
+	sobrenome VARCHAR(60) NOT NULL,
+	cpf VARCHAR(14) NOT NULL UNIQUE,
+	email VARCHAR(80) NOT NULL UNIQUE,
+	logradouro VARCHAR(80) NOT NULL,
+	numero VARCHAR(2) NOT NULL,
+	complemento VARCHAR(20) NULL,
+	uf VARCHAR(2) NOT NULL,
+	cep VARCHAR(10) NOT NULL,
+	senha VARCHAR(32) NOT NULL,
+	PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS pedidos CASCADE;
+CREATE TABLE pedidos(
+	id SERIAL,
+	idCliente INTEGER NOT NULL,
+	dataPedido VARCHAR(10) NOT NULL,
+	notafiscal VARCHAR(30) NOT NULL UNIQUE,
+	PRIMARY KEY (id),
+	FOREIGN KEY (idCliente) REFERENCES clientes(id)
+);
+
+DROP TABLE IF EXISTS venda CASCADE;
+CREATE TABLE venda(
+	id SERIAL,
+	idPedido INTEGER NOT NULL,
+	idProduto INTEGER NOT NULL,
+	quantidade INTEGER NOT NULL DEFAULT(1),
+	PRIMARY KEY (id),
+	FOREIGN KEY (idPedido) REFERENCES pedidos(id),
+	FOREIGN KEY (idProduto) REFERENCES produtos(id)
+);
+
